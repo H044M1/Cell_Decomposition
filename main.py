@@ -4,6 +4,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from cell_decomposition import *
+from PyQt5 import QtWidgets, QtGui
 
 SCREEN_WIDTH = 900
 SCREEN_HEIGH = 600
@@ -11,10 +12,11 @@ POINT_SIZE = 8
 PEN_SIZE = 2
 CANVAS_SIZE = 20
 WHITE_COLOR = "#F5F5F5"
-DARK_PURPLE_COLOR = "#AF97F7"
-LIGHT_PURPLE_COLOR = "#ECB6FB"
+BG_COLLOR = "#393E46"
+BUTTON_COLLOR = "#A9AFB7"
 RED_COLOR = "#FC5185"
 NORM = 32
+NO_PATH = "No Path"
 
 
 class Window(QMainWindow):
@@ -28,8 +30,9 @@ class Window(QMainWindow):
         self.flag = False
         self.result = []
         self.total_weight = -1
+        self.NameProgramm()
 
-        self.setStyleSheet(f"background-color: {DARK_PURPLE_COLOR};" "")
+        self.setStyleSheet(f"background-color: {BG_COLLOR};" "")
 
         self.start_button = QPushButton(self)
         self.start_button.setGeometry(QRect(20, 550, 141, 41))
@@ -56,7 +59,7 @@ class Window(QMainWindow):
         self.add_end_point = QPushButton(self)
         self.add_end_point.setGeometry(QRect(550, 81, 180, 41))
         self.add_end_point.setStyleSheet(
-            f"background-color: {LIGHT_PURPLE_COLOR};\n"
+            f"background-color: {BUTTON_COLLOR};\n"
             "font: 16pt Arial;\n"
             "border-radius: 10;"
         )
@@ -67,7 +70,7 @@ class Window(QMainWindow):
         self.add_start_point = QPushButton(self)
         self.add_start_point.setGeometry(QRect(550, 20, 180, 41))
         self.add_start_point.setStyleSheet(
-            f"background-color: {LIGHT_PURPLE_COLOR};\n"
+            f"background-color: {BUTTON_COLLOR};\n"
             "font: 16pt Arial;\n"
             "border-radius: 10;"
         )
@@ -78,7 +81,7 @@ class Window(QMainWindow):
         self.export_button = QPushButton(self)
         self.export_button.setGeometry(QRect(550, 201, 180, 41))
         self.export_button.setStyleSheet(
-            f"background-color: {LIGHT_PURPLE_COLOR};\n"
+            f"background-color: {BUTTON_COLLOR};\n"
             "font: 16pt Arial;\n"
             "border-radius: 10;"
         )
@@ -89,7 +92,7 @@ class Window(QMainWindow):
         self.import_button = QPushButton(self)
         self.import_button.setGeometry(QRect(550, 261, 180, 41))
         self.import_button.setStyleSheet(
-            f"background-color: {LIGHT_PURPLE_COLOR};\n"
+            f"background-color: {BUTTON_COLLOR};\n"
             "font: 16pt Arial;\n"
             "border-radius: 10;"
         )
@@ -100,7 +103,7 @@ class Window(QMainWindow):
         self.add_obstacle_button = QPushButton(self)
         self.add_obstacle_button.setGeometry(QRect(550, 141, 180, 41))
         self.add_obstacle_button.setStyleSheet(
-            f"background-color: {LIGHT_PURPLE_COLOR};\n"
+            f"background-color: {BUTTON_COLLOR};\n"
             "font: 16pt Arial;\n"
             "border-radius: 10;"
         )
@@ -112,7 +115,7 @@ class Window(QMainWindow):
         self.input_start_coords.setGeometry(QRect(750, 20, 180, 41))
         self.input_start_coords.setLayoutDirection(Qt.LeftToRight)
         self.input_start_coords.setStyleSheet(
-            f"background-color: {LIGHT_PURPLE_COLOR};\n"
+            f"background-color: {BUTTON_COLLOR};\n"
             "font: 16pt Arial;\n"
             "border-radius: 5;"
         )
@@ -123,7 +126,7 @@ class Window(QMainWindow):
         self.input_end_coords.setGeometry(QRect(750, 81, 180, 41))
         self.input_end_coords.setLayoutDirection(Qt.LeftToRight)
         self.input_end_coords.setStyleSheet(
-            f"background-color: {LIGHT_PURPLE_COLOR};\n"
+            f"background-color: {BUTTON_COLLOR};\n"
             "font: 16pt Arial;\n"
             "border-radius: 5;"
         )
@@ -134,7 +137,7 @@ class Window(QMainWindow):
         self.input_obsctale_coords.setGeometry(QRect(750, 141, 180, 41))
         self.input_obsctale_coords.setLayoutDirection(Qt.LeftToRight)
         self.input_obsctale_coords.setStyleSheet(
-            f"background-color: {LIGHT_PURPLE_COLOR};\n"
+            f"background-color: {BUTTON_COLLOR};\n"
             "font: 16pt Arial;\n"
             "border-radius: 5;"
         )
@@ -144,7 +147,7 @@ class Window(QMainWindow):
         self.input_obsctale_radius.setGeometry(QRect(950, 141, 180, 41))
         self.input_obsctale_radius.setLayoutDirection(Qt.LeftToRight)
         self.input_obsctale_radius.setStyleSheet(
-            f"background-color: {LIGHT_PURPLE_COLOR};\n"
+            f"background-color: {BUTTON_COLLOR};\n"
             "font: 16pt Arial;\n"
             "border-radius: 5;"
         )
@@ -170,8 +173,10 @@ class Window(QMainWindow):
         self.clear_button.setText("Clear Scene")
         self.clear_button.clicked.connect(self.clear_scene)
 
-        
-
+    def NameProgramm(self):
+            self.setWindowTitle('Cell decomposition')
+            self.setWindowIcon(QIcon('cell.png'))   
+ 
     def get_start_point(self):
         self.start_point.x, self.start_point.y = [
             int(item) for item in self.input_start_coords.text().split(",")
@@ -286,9 +291,14 @@ class Window(QMainWindow):
             elif point.color == "orange":
                 end_index = index
 
+
         connect_neighbor_squares(self.graph, self.grid)
         self.shortest_path = dijkstra(self.graph, start_index, end_index)
         self.total_weight = total_distance(self.shortest_path, self.graph)
+        
+        if len(self.shortest_path) < 2:
+            self.shortest_path.clear
+            self.total_weight = -1
 
         if self.total_weight == -1:
             self.result_label.setText("  Unable to find the path")
@@ -298,8 +308,6 @@ class Window(QMainWindow):
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        painter.begin(self)
-        painter.begin(self)
         painter.setBrush(QBrush(Qt.white))
         painter.drawRect(CANVAS_SIZE, CANVAS_SIZE, 512, 512)
         if self.flag:
@@ -319,6 +327,22 @@ class Window(QMainWindow):
                     int(square.side_length * NORM),
                 )
                 painter.drawRect(rect)
+            
+            painter.setPen(QPen(Qt.NoPen))
+            painter.setBrush(QBrush(Qt.green))
+            painter.drawEllipse(
+                int(self.start_point.x * NORM) + CANVAS_SIZE,
+                int(self.start_point.y * NORM) + CANVAS_SIZE,
+                POINT_SIZE,
+                POINT_SIZE,
+            )
+            painter.setBrush(QBrush(Qt.red))
+            painter.drawEllipse(
+                int(self.end_point.x * NORM) + CANVAS_SIZE,
+                int(self.end_point.y * NORM) + CANVAS_SIZE,
+                POINT_SIZE,
+                POINT_SIZE,
+            )
 
             painter.setBrush(QBrush(Qt.white))
             painter.setPen(QPen(Qt.blue, 2))
@@ -338,58 +362,42 @@ class Window(QMainWindow):
 
             painter.setBrush(QBrush(Qt.white))
             painter.setPen(QPen(Qt.red, 2))
-            for i in range(len(self.shortest_path) - 1):
-                key = self.shortest_path[i]
-                value = self.shortest_path[i + 1]
-                if key in self.graph.points:
-                    if value in self.graph.points:
-                        line_start = QPoint(
-                            int(self.graph.points[key].x * NORM) + CANVAS_SIZE,
-                            int(self.graph.points[key].y * NORM) + CANVAS_SIZE,
-                        )
-                        line_end = QPoint(
-                            int(self.graph.points[value].x * NORM) + CANVAS_SIZE,
-                            int(self.graph.points[value].y * NORM) + CANVAS_SIZE,
-                        )
-                        painter.drawLine(line_start, line_end)
+            if self.shortest_path != 1:
+                for i in range(len(self.shortest_path) - 1):
+                    key = self.shortest_path[i]
+                    value = self.shortest_path[i + 1]
+                    if key in self.graph.points:
+                        if value in self.graph.points:
+                            line_start = QPoint(
+                                int(self.graph.points[key].x * NORM) + CANVAS_SIZE,
+                                int(self.graph.points[key].y * NORM) + CANVAS_SIZE,
+                            )
+                            line_end = QPoint(
+                                int(self.graph.points[value].x * NORM) + CANVAS_SIZE,
+                                int(self.graph.points[value].y * NORM) + CANVAS_SIZE,
+                            )
+                            painter.drawLine(line_start, line_end)
 
-            line_start = QPoint(
-                int(self.start_point.x * NORM) + CANVAS_SIZE,
-                int(self.start_point.y * NORM) + CANVAS_SIZE,
-            )
-            line_end = QPoint(
-                int(self.graph.points[self.shortest_path[0]].x * NORM) + CANVAS_SIZE,
-                int(self.graph.points[self.shortest_path[0]].y * NORM) + CANVAS_SIZE,
-            )
-            painter.drawLine(line_start, line_end)
+                    line_start = QPoint(
+                        int(self.start_point.x * NORM) + CANVAS_SIZE,
+                        int(self.start_point.y * NORM) + CANVAS_SIZE,
+                    )
+                    line_end = QPoint(
+                        int(self.graph.points[self.shortest_path[0]].x * NORM) + CANVAS_SIZE,
+                        int(self.graph.points[self.shortest_path[0]].y * NORM) + CANVAS_SIZE,
+                    )
+                    painter.drawLine(line_start, line_end)
 
-            line_start = QPoint(
-                int(self.end_point.x * NORM) + CANVAS_SIZE,
-                int(self.end_point.y * NORM) + CANVAS_SIZE,
-            )
-            line_end = QPoint(
-                int(self.graph.points[self.shortest_path[-1]].x * NORM) + CANVAS_SIZE,
-                int(self.graph.points[self.shortest_path[-1]].y * NORM) + CANVAS_SIZE,
-            )
-            painter.drawLine(line_start, line_end)
-
-            painter.setPen(QPen(Qt.NoPen))
-            painter.setBrush(QBrush(Qt.green))
-            painter.drawEllipse(
-                int(self.start_point.x * NORM) + CANVAS_SIZE,
-                int(self.start_point.y * NORM) + CANVAS_SIZE,
-                POINT_SIZE,
-                POINT_SIZE,
-            )
-            painter.setBrush(QBrush(Qt.red))
-            painter.drawEllipse(
-                int(self.end_point.x * NORM) + CANVAS_SIZE,
-                int(self.end_point.y * NORM) + CANVAS_SIZE,
-                POINT_SIZE,
-                POINT_SIZE,
-            )
+                    line_start = QPoint(
+                        int(self.end_point.x * NORM) + CANVAS_SIZE,
+                        int(self.end_point.y * NORM) + CANVAS_SIZE,
+                    )
+                    line_end = QPoint(
+                        int(self.graph.points[self.shortest_path[-1]].x * NORM) + CANVAS_SIZE,
+                        int(self.graph.points[self.shortest_path[-1]].y * NORM) + CANVAS_SIZE,
+                    )
+                    painter.drawLine(line_start, line_end)
             self.update()
-        painter.end()
 
 
 if __name__ == "__main__":
