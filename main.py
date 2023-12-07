@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from cell_decomposition import *
-from PyQt5 import QtWidgets, QtGui
+
 
 SCREEN_WIDTH = 900
 SCREEN_HEIGH = 600
@@ -16,7 +16,6 @@ BG_COLLOR = "#393E46"
 BUTTON_COLLOR = "#A9AFB7"
 RED_COLOR = "#FC5185"
 NORM = 32
-NO_PATH = "No Path"
 
 
 class Window(QMainWindow):
