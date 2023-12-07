@@ -224,8 +224,11 @@ class Window(QMainWindow):
             "Text Files(*.txt);;JPEG Files(*.jpeg);;\
                                                         PNG Files(*.png);;GIF File(*.gif);;All Files(*)",
         )
-        with open(filename, "r") as f:
-            lines = f.readlines()
+        try:
+            with open(filename, "r") as f:
+                lines = f.readlines()
+        except:
+            return
 
         start_point_params = list(map(float, lines[0].replace("\n", "").split(",")))
         self.start_point.x = start_point_params[0]
@@ -252,13 +255,16 @@ class Window(QMainWindow):
             "Text Files(*.txt);;JPEG Files(*.jpeg);;\
                                                          PNG Files(*.png);;GIF File(*.gif);;All Files(*)",
         )
-        with open(f"{filename}", "w") as F:
-            F.write(f"{self.start_point.x},{self.start_point.y}\n")
-            F.write(f"{self.end_point.x},{self.end_point.y}\n")
-            for item in self.obstacles:
-                F.write(
-                    f"{item.x},{item.y},{item.radius}\n"
-                )
+        try:
+            with open(f"{filename}", "w") as F:
+                F.write(f"{self.start_point.x},{self.start_point.y}\n")
+                F.write(f"{self.end_point.x},{self.end_point.y}\n")
+                for item in self.obstacles:
+                    F.write(
+                        f"{item.x},{item.y},{item.radius}\n"
+                    )
+        except:
+            return
 
     def stop(self):
         exit(0)
