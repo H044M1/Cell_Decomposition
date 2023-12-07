@@ -153,11 +153,22 @@ class Window(QMainWindow):
         
 
         self.result_label = QLabel(self)
-        self.result_label.setGeometry(QRect(341, 550, 400, 41))  # change
+        self.result_label.setGeometry(QRect(551, 550, 400, 41))  # change
         self.result_label.setStyleSheet(
             "background-color: #ffffff;\n" "font: 16pt Arial;\n" "border-radius: 10;"
         )
         self.result_label.setText(f"  Result: ")
+
+        self.clear_button = QPushButton(self)
+        self.clear_button.setGeometry(QRect(341, 550, 180, 41))
+        self.clear_button.setStyleSheet(
+            f"background-color: {RED_COLOR};\n"
+            "font: 16pt Arial;\n"
+            "border-radius: 10;"
+        )
+        self.clear_button.setObjectName("clear_button")
+        self.clear_button.setText("Clear Scene")
+        self.clear_button.clicked.connect(self.clear_scene)
 
         
 
@@ -234,6 +245,17 @@ class Window(QMainWindow):
 
     def stop(self):
         exit(0)
+
+    def clear_scene(self):
+        self.obstacles = []
+        self.start_point = Point(0, 0)
+        self.end_point = Point(0, 0)
+        self.grid = []
+        self.graph = Graph()
+        self.flag = False
+        self.shortest_path = []
+        self.result_label.setText("  Result: ")
+        self.update()
 
     def start(self):
         self.grid = [Rectangle(Point(0, 0), side_length=16)]
