@@ -191,12 +191,25 @@ class Window(QMainWindow):
     def add_obstacle(self):
         coords = self.get_obsctale_coords()
         radius = self.get_obstacles_radius()
-        self.obstacles.append(
-            Circle(
-                Point(coords[0], coords[1]),
-                radius
+        if len(self.obstacles) < 1:
+            self.obstacles.append(
+                Circle(
+                    Point(coords[0], coords[1]),
+                    radius
+                )
             )
-        )
+        else:
+            self.graph = Graph()
+            self.shortest_path = []
+            self.flag = False
+            coords = self.get_obsctale_coords()
+            radius = self.get_obstacles_radius()
+            self.obstacles.append(
+                Circle(
+                    Point(coords[0], coords[1]),
+                    radius
+                )
+            )
         print(self.obstacles)
 
     def import_scene(self):
