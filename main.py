@@ -304,6 +304,7 @@ class Window(QMainWindow):
         self.flag = False
         self.shortest_path = []
         self.result_label.setText("  Result: ")
+        cell_decomposition.MIN_SQUARE_SIZE = 0.25
         self.update()
 
     def start(self):
