@@ -9,6 +9,10 @@ SIZE_Y = 16
 CANVAS_SIZE = 7
 MIN_SQUARE_SIZE = 0.25
 
+def check_point_in_circle(point,circle):
+    distance_squared = (point.x - circle.x)**2 + (point.y - circle.y)**2
+    return distance_squared <= circle.radius**2
+
 def check_collision(shape1, shape2):
     
     def check_circle_n_rectangle(point1, radius, point0):
