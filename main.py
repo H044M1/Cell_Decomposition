@@ -3,6 +3,7 @@ import PyQt5
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+import cell_decomposition
 from cell_decomposition import *
 
 
@@ -30,6 +31,7 @@ class Window(QMainWindow):
         self.result = []
         self.total_weight = -1
         self.NameProgramm()
+        self.setFixedSize(1150, 600)
 
         self.setStyleSheet(f"background-color: {BG_COLLOR};" "")
 
@@ -152,8 +154,6 @@ class Window(QMainWindow):
         )
         self.input_obsctale_radius.setText("Obst radius")
 
-        
-
         self.result_label = QLabel(self)
         self.result_label.setGeometry(QRect(551, 550, 400, 41))  # change
         self.result_label.setStyleSheet(
@@ -171,6 +171,28 @@ class Window(QMainWindow):
         self.clear_button.setObjectName("clear_button")
         self.clear_button.setText("Clear Scene")
         self.clear_button.clicked.connect(self.clear_scene)
+
+        self.change_sq_size = QPushButton(self)
+        self.change_sq_size.setGeometry(QRect(550, 321, 180, 41))
+        self.change_sq_size.setStyleSheet(
+            f"background-color: {BUTTON_COLLOR};\n"
+            "font: 16pt Arial;\n"
+            "border-radius: 10;"
+        )
+        self.change_sq_size.setObjectName("change_sq_size")
+        self.change_sq_size.setText("Change Sq")
+        self.change_sq_size.clicked.connect(self.get_sq_size)
+
+        self.gen_sq_size = QLineEdit(self)
+        self.gen_sq_size.setGeometry(QRect(750, 321, 180, 41))
+        self.gen_sq_size.setLayoutDirection(Qt.LeftToRight)
+        self.gen_sq_size.setStyleSheet(
+            f"background-color: {BUTTON_COLLOR};\n"
+            "font: 16pt Arial;\n"
+            "border-radius: 5;"
+        )
+        self.gen_sq_size.setObjectName("gen_sq_size")
+        self.gen_sq_size.setText("Sq size")
 
     def NameProgramm(self):
             self.setWindowTitle('Cell decomposition')
@@ -215,6 +237,10 @@ class Window(QMainWindow):
                 )
             )
         print(self.obstacles)
+
+    def get_sq_size(self):
+        cell_decomposition.MIN_SQUARE_SIZE = float(self.gen_sq_size.text())
+   
 
     def import_scene(self):
         filename, filetype = QFileDialog.getOpenFileName(
