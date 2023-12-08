@@ -236,7 +236,6 @@ class Window(QMainWindow):
                     radius
                 )
             )
-        print(self.obstacles)
 
     def get_sq_size(self):
         cell_decomposition.MIN_SQUARE_SIZE = float(self.gen_sq_size.text())
@@ -312,6 +311,15 @@ class Window(QMainWindow):
         self.grid = create_grid(self.obstacles, self.grid)
         self.grid = sorted(self.grid, key=sorting_key)
 
+        for obs in self.obstacles:
+            if check_point_in_circle(self.start_point, obs) or check_point_in_circle(self.end_point, obs):
+                self.total_weight = -1
+                if self.total_weight == -1:
+                    self.result_label.setText("  Unable to find the path")
+                return
+            else:
+                continue
+                        
         mark_up_grid_n_graph(self.grid, self.graph, self.start_point, self.end_point)
 
         start_index = None
